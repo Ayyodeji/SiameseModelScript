@@ -16,7 +16,7 @@ import math
 import numpy as np
 from matplotlib import pyplot
 import tensorflow as tf
-import scipy.stats
+from scipy.spatial.distance import cityblock
 from keras.applications.inception_v3 import preprocess_input
 from keras import backend, layers, metrics
 from keras.optimizers import Adam
