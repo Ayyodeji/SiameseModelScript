@@ -172,17 +172,17 @@ def predict_similarity(image1, image2, threshold=0.8):
     img2.append(image_2)
     img1 = preprocess_input(np.array(img1))
     img2 = preprocess_input(np.array(img2))
+    from scipy.spatial.distance import cityblock
 
     tensor1 = encoder.predict(img1)
     tensor2 = encoder.predict(img2)
 
-    correlation, _ = scipy.stats.spearmanr(tensor1, tensor2)
-    distance = 1 - correlation
+    manhattan_distance = cityblock(tensor1, tensor2)
+    manhattan_prediction = 0 if manhattan_distance <= threshold else 1
+    manhattan_distance *= 100
 
-    threshold = 0.5  # Set your desired threshold here
-    prediction = np.where(distance <= threshold, 0, 1)
-    distance *= 100
     return str(str(distance[0]) + '%')
+
 def bulktest(dirlist):
   arrBT = []
   arrBTN = []
