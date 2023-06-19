@@ -16,6 +16,7 @@ import math
 import numpy as np
 from matplotlib import pyplot
 import tensorflow as tf
+import scipy.stats
 from keras.applications.inception_v3 import preprocess_input
 from keras import backend, layers, metrics
 from keras.optimizers import Adam
@@ -171,12 +172,16 @@ def predict_similarity(image1, image2, threshold=0.8):
     img2.append(image_2)
     img1 = preprocess_input(np.array(img1))
     img2 = preprocess_input(np.array(img2))
+
     tensor1 = encoder.predict(img1)
     tensor2 = encoder.predict(img2)
 
-    distance = np.sum(tensor1*tensor2, axis=1)/(norm(tensor1, axis=1)*norm(tensor2, axis=1))
-    prediction = np.where(distance<=threshold, 0, 1)
-    distance = distance*100
+    correlation, _ = scipy.stats.spearmanr(tensor1, tensor2)
+    distance = 1 - correlation
+
+    threshold = 0.5  # Set your desired threshold here
+    prediction = np.where(distance <= threshold, 0, 1)
+    distance *= 100
     return str(str(distance[0]) + '%')
 def bulktest(dirlist):
   arrBT = []
